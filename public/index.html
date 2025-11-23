@@ -118,6 +118,46 @@ document.getElementById('btnCreate').addEventListener('click', async () => {
   }
 });
 
+document.getElementById('btnCopy').addEventListener('click', async () => {
+  const apiKey = apiKeyTextarea.value.trim();
+  if (!apiKey) return alert('Belum ada API key untuk disalin!');
+  try {
+    await navigator.clipboard.writeText(apiKey);
+    const btn = document.getElementById('btnCopy');
+    btn.textContent = 'Copied!';
+    setTimeout(() => (btn.textContent = 'Copy'), 1500);
+  } catch (err) {
+    alert('Gagal menyalin API key: ' + err);
+  }
+});
+
+document.getElementById('btnCheck').addEventListener('click', async () => {
+  const apiKey = apiKeyTextarea.value.trim();
+  if (!apiKey) return alert('Isi dulu API Key yang mau dicek!');
+
+  try {
+    const res = await fetch('/cekapi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ apiKey })
+    });
+
+    const data = await res.json();
+
+    if (data.valid) {
+      statusEl.textContent = '✅ API Key valid dan terdaftar di database!';
+      statusEl.style.color = 'green';
+    } else {
+      statusEl.textContent = '❌ API Key tidak valid: ' + (data.error || '');
+      statusEl.style.color = 'red';
+    }
+  } catch (err) {
+    statusEl.textContent = 'Error: ' + err.message;
+    statusEl.style.color = 'red';
+  }
+});
+
+
 </script>
 
 </html>
