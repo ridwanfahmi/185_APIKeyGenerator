@@ -157,6 +157,47 @@ document.getElementById('btnCheck').addEventListener('click', async () => {
   }
 });
 
+btnSaveUser.addEventListener('click', async () => {
+  const apiKey = apiKeyTextarea.value.trim();
+  const first_name = firstNameInput.value.trim();
+  const last_name = lastNameInput.value.trim();
+  const email_address = emailInput.value.trim();
+
+  if (!apiKey) {
+    alert('Buat API key dulu sebelum menyimpan user.');
+    return;
+  }
+
+  if (!first_name || !last_name || !email_address) {
+    alert('Semua field user wajib diisi.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ first_name, last_name, email_address, apiKey })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Gagal menyimpan user');
+    }
+
+    statusEl.textContent = 'Data user dan API key berhasil disimpan.';
+    statusEl.style.color = 'green';
+
+    setUserFormEnabled(false);
+  } catch (err) {
+    statusEl.textContent = 'Error: ' + err.message;
+    statusEl.style.color = 'red';
+  }
+});
+
+// disable form awal
+setUserFormEnabled(false);
 
 </script>
 
