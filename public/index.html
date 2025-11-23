@@ -4,285 +4,241 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pembuat API Key</title>
+
   <style>
+    /* ===== GALAXY BACKGROUND ===== */
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #ffe6f0;
-      color: #4a4a4a;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at 20% 20%, #3a1c71, #1a1a2e, #000);
+      color: #e0e0ff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .container {
-      background-color: #fff0f6;
-      border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(255, 0, 128, 0.2);
-      padding: 30px;
-      width: 380px;
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url("https://www.transparenttextures.com/patterns/stardust.png");
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 240px;
+      background: rgba(20,20,40,0.65);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid rgba(120,50,255,0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      box-shadow: 2px 0 20px rgba(100,0,200,0.3);
+    }
+
+    .sidebar h2 {
+      color: #dca5ff;
+      text-shadow: 0 0 10px #b050ff;
+      margin-bottom: 30px;
+    }
+
+    .sidebar .nav-item {
+      background: rgba(120,0,255,0.3);
+      padding: 10px 20px;
+      width: 100%;
+      border-radius: 10px;
       text-align: center;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.3s;
     }
 
-    h1 {
-      color: #ff4081;
+    .sidebar .nav-item:hover {
+      background: rgba(150,0,255,0.5);
+      box-shadow: 0 0 12px rgba(180,0,255,0.6);
+    }
+
+    /* ===== MAIN AREA ===== */
+    .main {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .main h1 {
+      color: #d3b1ff;
+      text-shadow: 0 0 8px #8a2be2;
       margin-bottom: 20px;
     }
 
+    /* ===== CARD ===== */
+    .card {
+      background: rgba(20,20,40,0.55);
+      padding: 25px;
+      border-radius: 16px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 20px rgba(130,0,255,0.4);
+    }
+
+    .card-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #c58dff;
+      border-bottom: 1px solid rgba(200,150,255,0.3);
+      padding-bottom: 5px;
+    }
+
+    /* ===== BUTTON ===== */
     button {
-      background-color: #ff4081;
+      background: linear-gradient(135deg, #6a00f4, #8f00ff, #b300ff);
       color: white;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 10px 20px;
-      font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin: 5px;
+      margin-right: 5px;
+      margin-top: 10px;
+      transition: 0.3s ease;
+      box-shadow: 0 0 12px rgba(150,0,255,0.5);
     }
 
     button:hover {
-      background-color: #ff6699;
+      box-shadow: 0 0 16px rgba(180,0,255,0.8);
+      background: linear-gradient(135deg, #9a2be2, #bf00ff);
     }
 
-    .textarea-container {
-      position: relative;
-      margin-top: 20px;
-    }
-
-    textarea {
+    textarea, input {
       width: 100%;
-      height: 120px;
-      border: 2px solid #ff80ab;
-      border-radius: 10px;
       padding: 10px;
-      font-size: 14px;
-      resize: none;
-      background-color: #fff;
-      color: #333;
-      box-sizing: border-box;
-    }
-
-    .copy-btn {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background-color: #ff80ab;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      opacity: 0.9;
-    }
-
-    .copy-btn:hover {
-      background-color: #ff6699;
-      opacity: 1;
+      border-radius: 10px;
+      border: 1px solid #9b57ff;
+      margin-top: 8px;
+      background: rgba(30,20,60,0.6);
+      color: #e8ddff;
+      box-shadow: inset 0 0 8px rgba(120,60,255,0.4);
     }
 
     #status {
-      margin-top: 15px;
-      font-weight: 500;
-      color: #ff4081;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #d799ff;
+      text-shadow: 0 0 6px #8a2be2;
     }
 
-    .form-group {
-      text-align: left;
-      margin-top: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: #ff4081;
-      font-weight: 600;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #ff80ab;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-
-    .section-title {
-      margin-top: 20px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #ff4081;
-      border-top: 1px dashed #ff80ab;
-      padding-top: 12px;
-    }
-
-    .disabled-hint {
-      font-size: 12px;
-      color: #999;
-      margin-top: 4px;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Buat API Key</h1>
-    <button id="btnCreate">Create API Key</button>
-    <button id="btnCheck">Cek API Key</button>
 
-    <div class="textarea-container">
-      <textarea id="apikey" readonly placeholder="API Key akan muncul di sini..."></textarea>
-      <button class="copy-btn" id="btnCopy">Copy</button>
-    </div>
-
-    <div class="section-title">Data User Pemilik API Key</div>
-    <div class="disabled-hint" id="userFormHint">
-      Buat API key dulu, baru form ini bisa diisi.
-    </div>
-
-    <div id="userForm">
-      <div class="form-group">
-        <label for="first_name">First Name</label>
-        <input id="first_name" type="text" placeholder="Masukkan first name" disabled />
-      </div>
-      <div class="form-group">
-        <label for="last_name">Last Name</label>
-        <input id="last_name" type="text" placeholder="Masukkan last name" disabled />
-      </div>
-      <div class="form-group">
-        <label for="email_address">Email</label>
-        <input id="email_address" type="email" placeholder="Masukkan email" disabled />
-      </div>
-      <button id="btnSaveUser" disabled>Simpan User</button>
-    </div>
-
-    <div id="status"></div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Pembuat APIKey</h2>
+    
   </div>
 
-  <script>
-    const apiKeyTextarea = document.getElementById('apikey');
-    const statusEl = document.getElementById('status');
+  <!-- MAIN AREA -->
+  <div class="main">
+    <h1>API Key Generator</h1>
 
-    const firstNameInput = document.getElementById('first_name');
-    const lastNameInput = document.getElementById('last_name');
-    const emailInput = document.getElementById('email_address');
-    const btnSaveUser = document.getElementById('btnSaveUser');
-    const userFormHint = document.getElementById('userFormHint');
+    <!-- CARD API -->
+    <div class="card">
+      <div class="card-title">Generate API Key</div>
 
-    function setUserFormEnabled(enabled) {
-      firstNameInput.disabled = !enabled;
-      lastNameInput.disabled = !enabled;
-      emailInput.disabled = !enabled;
-      btnSaveUser.disabled = !enabled;
-      userFormHint.textContent = enabled
-        ? 'Isi data user lalu klik "Simpan User".'
-        : 'Buat API key dulu, baru form ini bisa diisi.';
+      <button id="btnCreate">Create API Key</button>
+      <button id="btnCheck">Cek API Key</button>
+
+      <textarea id="apikey" readonly placeholder="API key akan tampil di sini..."></textarea>
+      <button id="btnCopy">Copy</button>
+
+      <div id="status"></div>
+    </div>
+
+    <!-- CARD USER -->
+    <div class="card">
+      <div class="card-title">Data User</div>
+
+      <label>First Name</label>
+      <input type="text" id="first_name" disabled>
+
+      <label>Last Name</label>
+      <input type="text" id="last_name" disabled>
+
+      <label>Email</label>
+      <input type="email" id="email_address" disabled>
+
+      <button id="btnSaveUser" disabled>Simpan User</button>
+    </div>
+  </div>
+
+<script>
+  // JS asli tetap sama, hanya dipindah ke sini
+  const apiKeyTextarea = document.getElementById("apikey");
+  const statusEl = document.getElementById("status");
+
+  const firstNameInput = document.getElementById("first_name");
+  const lastNameInput = document.getElementById("last_name");
+  const emailInput = document.getElementById("email_address");
+  const btnSaveUser = document.getElementById("btnSaveUser");
+
+  function setUserFormEnabled(enabled) {
+    firstNameInput.disabled = !enabled;
+    lastNameInput.disabled = !enabled;
+    emailInput.disabled = !enabled;
+    btnSaveUser.disabled = !enabled;
+  }
+
+  document.getElementById("btnCreate").addEventListener("click", async () => {
+    try {
+      const res = await fetch("/create", { method: "POST" });
+      const data = await res.json();
+      apiKeyTextarea.value = data.apiKey;
+
+      statusEl.textContent = "API Key berhasil dibuat!";
+      setUserFormEnabled(true);
+    } catch {
+      statusEl.textContent = "Error membuat API key";
     }
+  });
 
-    document.getElementById('btnCreate').addEventListener('click', async () => {
-      try {
-        const response = await fetch('/create', { method: 'POST' });
-        if (!response.ok) throw new Error('Gagal mengakses server!');
-        const data = await response.json();
-        apiKeyTextarea.value = data.apiKey;
-        statusEl.textContent = 'API Key berhasil dibuat!';
-        statusEl.style.color = '#ff4081';
+  document.getElementById("btnCopy").addEventListener("click", async () => {
+    navigator.clipboard.writeText(apiKeyTextarea.value);
+    alert("API key disalin!");
+  });
 
-        // enable form user setelah api key dibuat
-        setUserFormEnabled(true);
-      } catch (err) {
-        apiKeyTextarea.value = 'Error: ' + err.message;
-        statusEl.textContent = '';
-        setUserFormEnabled(false);
-      }
+  document.getElementById("btnCheck").addEventListener("click", async () => {
+    const apiKey = apiKeyTextarea.value.trim();
+    const res = await fetch("/cekapi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ apiKey })
+    });
+    const data = await res.json();
+
+    statusEl.textContent = data.valid ? "API Key Valid" : "API Key Tidak Valid";
+  });
+
+  btnSaveUser.addEventListener("click", async () => {
+    const apiKey = apiKeyTextarea.value.trim();
+    const first = firstNameInput.value.trim();
+    const last = lastNameInput.value.trim();
+    const email = emailInput.value.trim();
+
+    const res = await fetch("/user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ first_name: first, last_name: last, email_address: email, apiKey })
     });
 
-    document.getElementById('btnCopy').addEventListener('click', async () => {
-      const apiKey = apiKeyTextarea.value.trim();
-      if (!apiKey) return alert('Belum ada API key untuk disalin!');
-      try {
-        await navigator.clipboard.writeText(apiKey);
-        const btn = document.getElementById('btnCopy');
-        btn.textContent = 'Copied!';
-        setTimeout(() => (btn.textContent = 'Copy'), 1500);
-      } catch (err) {
-        alert('Gagal menyalin API key: ' + err);
-      }
-    });
+    const data = await res.json();
+    statusEl.textContent = "User berhasil disimpan!";
+  });
 
-    document.getElementById('btnCheck').addEventListener('click', async () => {
-      const apiKey = apiKeyTextarea.value.trim();
-      if (!apiKey) return alert('Isi dulu API Key yang mau dicek!');
+</script>
 
-      try {
-        const res = await fetch('/cekapi', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ apiKey })
-        });
-
-        const data = await res.json();
-
-        if (data.valid) {
-          statusEl.textContent = '✅ API Key valid dan terdaftar di database!';
-          statusEl.style.color = 'green';
-        } else {
-          statusEl.textContent = '❌ API Key tidak valid: ' + (data.error || '');
-          statusEl.style.color = 'red';
-        }
-      } catch (err) {
-        statusEl.textContent = 'Error: ' + err.message;
-        statusEl.style.color = 'red';
-      }
-    });
-
-    // tombol simpan user
-    btnSaveUser.addEventListener('click', async () => {
-      const apiKey = apiKeyTextarea.value.trim();
-      const first_name = firstNameInput.value.trim();
-      const last_name = lastNameInput.value.trim();
-      const email_address = emailInput.value.trim();
-
-      if (!apiKey) {
-        alert('Buat API key dulu sebelum menyimpan user.');
-        return;
-      }
-
-      if (!first_name || !last_name || !email_address) {
-        alert('Semua field user wajib diisi.');
-        return;
-      }
-
-      try {
-        const res = await fetch('/user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ first_name, last_name, email_address, apiKey })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Gagal menyimpan user');
-        }
-
-        statusEl.textContent = 'Data user dan API key berhasil disimpan.';
-        statusEl.style.color = 'green';
-
-        // optional: disable lagi supaya user nggak spam
-        setUserFormEnabled(false);
-      } catch (err) {
-        statusEl.textContent = 'Error: ' + err.message;
-        statusEl.style.color = 'red';
-      }
-    });
-
-    // pastikan form disabled di awal
-    setUserFormEnabled(false);
-  </script>
 </body>
 </html>

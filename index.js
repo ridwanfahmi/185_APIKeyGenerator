@@ -306,6 +306,9 @@ function computeStatus(row) {
   return 'online';
 }
 
+
+
+
 // =============================
 // 7. ADMIN: DASHBOARD (LIST USER + API KEY + STATUS)
 // =============================
@@ -354,138 +357,252 @@ app.get('/admin/dashboard', isAuthenticated, async (req, res) => {
     }
 
     const html = `
-      <!DOCTYPE html>
-      <html lang="id">
-      <head>
-        <meta charset="UTF-8" />
-        <title>Admin Dashboard - API Key</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-          }
-          .wrapper {
-            max-width: 1100px;
-            margin: 20px auto;
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 20px 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-          }
-          h1, h2 {
-            margin-top: 0;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-          }
-          th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-          }
-          th {
-            background-color: #f0f0f0;
-          }
-          .status-online {
-            color: green;
-            font-weight: bold;
-          }
-          .status-offline {
-            color: red;
-            font-weight: bold;
-          }
-          .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-          }
-          button {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            background-color: #ff4081;
-            color: #fff;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="wrapper">
-          <div class="top-bar">
-            <h1>Admin Dashboard</h1>
-            <form id="logoutForm" method="post" action="/admin/logout">
-              <button type="submit">Logout</button>
-            </form>
-          </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard - Galaxy Theme</title>
+  <style>
+    /* ===== BACKGROUND GALAXY ===== */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top, #3f0071, #000000 70%);
+      min-height: 100vh;
+      color: #fff;
+      overflow-x: hidden;
+    }
 
-          <h2>Daftar User</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${userRows || '<tr><td colspan="4">Belum ada user.</td></tr>'}
-            </tbody>
-          </table>
+    /* Bintang */
+    body::before {
+      content: "";
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: white;
+      box-shadow:
+        50px 80px #fff,
+        200px 200px #fff,
+        350px 120px #fff,
+        500px 300px #fff,
+        650px 180px #fff,
+        800px 260px #fff;
+      animation: twinkle 4s infinite alternate ease-in-out;
+    }
 
-          <h2>Daftar API Key & Status</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>API Key</th>
-                <th>User ID</th>
-                <th>is_active</th>
-                <th>created_at</th>
-                <th>last_used_at</th>
-                <th>out_of_date</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${keyRows || '<tr><td colspan="9">Belum ada API key.</td></tr>'}
-            </tbody>
-          </table>
-        </div>
+    @keyframes twinkle {
+      0% { opacity: .3; }
+      100% { opacity: 1; }
+    }
 
-        <script>
-          async function deleteApiKey(id) {
-            const yakin = confirm('Yakin mau hapus API key dengan ID ' + id + '?');
-            if (!yakin) return;
+    /* ===== WRAPPER GLASS ===== */
+    .wrapper {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 25px rgba(120, 0, 255, 0.5);
+      animation: float 4s infinite ease-in-out;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0); }
+    }
 
-            try {
-              const res = await fetch('/admin/apikey/' + id, {
-                method: 'DELETE'
-              });
+    h1, h2 {
+      margin-top: 0;
+      color: #EAE2FF;
+      text-shadow: 0 0 12px #9b5de5;
+    }
 
-              const data = await res.json();
+    /* ===== LOGOUT BUTTON ===== */
+    button {
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(45deg, #7b2ff7, #9c1aff);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 0 12px #b388ff;
+      transition: .2s;
+    }
+    button:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 20px #d2a8ff;
+    }
 
-              if (!res.ok) {
-                throw new Error(data.error || 'Gagal menghapus API key');
-              }
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
 
-              alert('API key berhasil dihapus.');
-              window.location.reload();
-            } catch (err) {
-              alert('Error: ' + err.message);
-            }
-          }
-        </script>
-      </body>
-      </html>
-    `;
+    /* ===== TABEL GALAXY ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      margin-bottom: 30px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    th {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(6px);
+      padding: 10px;
+      border-bottom: 2px solid rgba(255,255,255,0.2);
+    }
+
+    td {
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    tr:hover td {
+      background: rgba(255,255,255,0.12);
+      transition: .2s;
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-online {
+      color: #00ff95;
+      font-weight: bold;
+      text-shadow: 0 0 8px #00ff95;
+    }
+
+    .status-offline {
+      color: #ff4d6d;
+      font-weight: bold;
+      text-shadow: 0 0 8px #ff4d6d;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="top-bar">
+      <h1>🌌 Admin Dashboard</h1>
+
+      <form id="logoutForm" method="post" action="/admin/logout">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+
+    <h2>👤 Daftar User</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${
+      users.length === 0
+        ? '<tr><td colspan="5">Belum ada user.</td></tr>'
+        : users
+            .map(
+              u => `
+        <tr>
+          <td>${u.id}</td>
+          <td>${u.first_name}</td>
+          <td>${u.last_name}</td>
+          <td>${u.email_address}</td>
+          <td>
+            <button onclick="deleteUser(${u.id})">Delete</button>
+          </td>
+        </tr>`
+            )
+            .join('')
+    }
+  </tbody>
+</table>
+
+
+    <h2>🔑 Daftar API Key & Status</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>API Key</th>
+          <th>User ID</th>
+          <th>Active</th>
+          <th>Dibuat</th>
+          <th>Terakhir Dipakai</th>
+          <th>Kedaluwarsa</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${keyRows || '<tr><td colspan="9">Belum ada API key.</td></tr>'}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function deleteApiKey(id) {
+      const yakin = confirm('Yakin mau hapus API key dengan ID ' + id + '?');
+      if (!yakin) return;
+
+      try {
+        const res = await fetch('/admin/apikey/' + id, {
+          method: 'DELETE'
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Gagal menghapus API key');
+        }
+
+        alert('API key berhasil dihapus.');
+        window.location.reload();
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    async function deleteUser(id) {
+  const yakin = confirm("Yakin mau hapus user ID " + id + " ? Semua API Key user juga ikut terhapus.");
+  if (!yakin) return;
+
+  try {
+    const res = await fetch("/admin/user/" + id, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Gagal menghapus user");
+    }
+
+    alert("User berhasil dihapus.");
+    window.location.reload();
+
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+}
+
+  </script>
+
+</body>
+</html>`;
+
 
     res.send(html);
   } catch (err) {
@@ -525,4 +642,26 @@ app.delete('/admin/apikey/:id', isAuthenticated, async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
+});
+
+
+app.delete('/admin/user/:id', isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // hapus API key milik user
+    await pool.execute('DELETE FROM api_key WHERE user_id = ?', [userId]);
+
+    // hapus user
+    const [result] = await pool.execute('DELETE FROM user WHERE id = ?', [userId]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User tidak ditemukan' });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Gagal menghapus user' });
+  }
 });
