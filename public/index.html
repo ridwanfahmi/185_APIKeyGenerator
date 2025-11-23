@@ -53,4 +53,32 @@
     <button id="btnCreate">Create API Key</button>
   </div>
 </body>
+<div class="textarea-container">
+  <textarea id="apikey" readonly placeholder="API Key akan muncul di sini..."></textarea>
+  <button class="copy-btn" id="btnCopy">Copy</button>
+</div>
+
+<div class="section-title">Data User Pemilik API Key</div>
+<div class="disabled-hint" id="userFormHint">
+  Buat API key dulu, baru form ini bisa diisi.
+</div>
+
+<div id="userForm">
+  <div class="form-group">
+    <label for="first_name">First Name</label>
+    <input id="first_name" type="text" placeholder="Masukkan first name" disabled />
+  </div>
+  <div class="form-group">
+    <label for="last_name">Last Name</label>
+    <input id="last_name" type="text" placeholder="Masukkan last name" disabled />
+  </div>
+  <div class="form-group">
+    <label for="email_address">Email</label>
+    <input id="email_address" type="email" placeholder="Masukkan email" disabled />
+  </div>
+  <button id="btnSaveUser" disabled>Simpan User</button>
+</div>
+
+<div id="status"></div>
+
 </html>
