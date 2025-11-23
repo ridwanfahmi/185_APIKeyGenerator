@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembuat API Key</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffe6f0;
+      color: #4a4a4a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #fff0f6;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(255, 0, 128, 0.2);
+      padding: 30px;
+      width: 350px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ff4081;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #ff6699;
+    }
+
+    .textarea-container {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      border: 2px solid #ff80ab;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+      resize: none;
+      background-color: #fff;
+      color: #333;
+      box-sizing: border-box;
+    }
+
+    .copy-btn {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background-color: #ff80ab;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      opacity: 0.9;
+    }
+
+    .copy-btn:hover {
+      background-color: #ff6699;
+      opacity: 1;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: 500;
+      color: #ff4081;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Buat API Key</h1>
+    <button id="btnCreate">Create API Key</button>
+    <button id="btnCheck">Cek API Key</button>
+
+    <div class="textarea-container">
+      <textarea id="apikey" readonly placeholder="API Key akan muncul di sini..."></textarea>
+      <button class="copy-btn" id="btnCopy">Copy</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <script>
+    document.getElementById('btnCreate').addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://localhost:3000/create', { method: 'POST' });
+        if (!response.ok) throw new Error('Gagal mengakses server!');
+        const data = await response.json();
+        document.getElementById('apikey').value = data.apiKey;
+        document.getElementById('status').textContent = 'API Key berhasil dibuat dan disimpan di database!';
+      } catch (err) {
+        document.getElementById('apikey').value = 'Error: ' + err.message;
+        document.getElementById('status').textContent = '';
+      }
+    });
+
+    document.getElementById('btnCopy').addEventListener('click', async () => {
+      const textarea = document.getElementById('apikey');
+      const apiKey = textarea.value.trim();
+      if (!apiKey) return alert('Belum ada API key untuk disalin!');
+      try {
+        await navigator.clipboard.writeText(apiKey);
+        const btn = document.getElementById('btnCopy');
+        btn.textContent = 'Copied!';
+        setTimeout(() => (btn.textContent = 'Copy'), 1500);
+      } catch (err) {
+        alert('Gagal menyalin API key: ' + err);
+      }
+    });
+
+    document.getElementById('btnCheck').addEventListener('click', async () => {
+      const apiKey = document.getElementById('apikey').value.trim();
+      if (!apiKey) return alert('Isi dulu API Key yang mau dicek!');
+
+      try {
+        const res = await fetch('http://localhost:3000/cekapi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey })
+        });
+
+        const data = await res.json();
+        const status = document.getElementById('status');
+
+        if (data.valid) {
+          status.textContent = '✅ API Key valid dan terdaftar di database!';
+          status.style.color = 'green';
+        } else {
+          status.textContent = '❌ API Key tidak valid: ' + (data.error || '');
+          status.style.color = 'red';
+        }
+      } catch (err) {
+        document.getElementById('status').textContent = 'Error: ' + err.message;
+        document.getElementById('status').style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>
