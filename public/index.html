@@ -81,4 +81,43 @@
 
 <div id="status"></div>
 
+<script>
+    const apiKeyTextarea = document.getElementById('apikey');
+const statusEl = document.getElementById('status');
+
+const firstNameInput = document.getElementById('first_name');
+const lastNameInput = document.getElementById('last_name');
+const emailInput = document.getElementById('email_address');
+const btnSaveUser = document.getElementById('btnSaveUser');
+const userFormHint = document.getElementById('userFormHint');
+
+function setUserFormEnabled(enabled) {
+  firstNameInput.disabled = !enabled;
+  lastNameInput.disabled = !enabled;
+  emailInput.disabled = !enabled;
+  btnSaveUser.disabled = !enabled;
+  userFormHint.textContent = enabled
+    ? 'Isi data user lalu klik "Simpan User".'
+    : 'Buat API key dulu, baru form ini bisa diisi.';
+}
+
+document.getElementById('btnCreate').addEventListener('click', async () => {
+  try {
+    const response = await fetch('/create', { method: 'POST' });
+    if (!response.ok) throw new Error('Gagal mengakses server!');
+    const data = await response.json();
+    apiKeyTextarea.value = data.apiKey;
+    statusEl.textContent = 'API Key berhasil dibuat!';
+    statusEl.style.color = '#ff4081';
+
+    setUserFormEnabled(true);
+  } catch (err) {
+    apiKeyTextarea.value = 'Error: ' + err.message;
+    statusEl.textContent = '';
+    setUserFormEnabled(false);
+  }
+});
+
+</script>
+
 </html>
